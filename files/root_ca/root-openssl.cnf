@@ -1,0 +1,15 @@
+[ req ]
+distinguished_name = dn
+x509_extensions    = v3_ca
+prompt             = no
+default_md         = sha256
+[ dn ]
+C  = NO
+O  = Statens Kartverk
+OU = SKIP
+CN = Istio Multicluster Demo Root CA
+[ v3_ca ]
+basicConstraints = critical, CA:true
+keyUsage         = critical, digitalSignature, keyEncipherment, keyCertSign
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
