@@ -10,6 +10,10 @@ This repository contains a demo setup for Istio multicluster (multi-primary with
   - cert-manager
   - [skiperator](https://github.com/kartverket/skiperator)
 
+# Architecture
+
+![Architecture](./files/illustration.png)
+
 ## Prerequisites
 - A privileged DigitalOcean token exposed as `DIGITALOCEAN_TOKEN` environment variable
 
