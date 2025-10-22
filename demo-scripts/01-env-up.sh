@@ -26,3 +26,6 @@ esac
 
 echo "Yielding control to skiperator for demo app in $CONTEXT"
 kubectl label deployment hello-stavanger skiperator.kartverket.no/ignore- -nexample --context "$CONTEXT"
+echo "Waiting for pods to be ready in $CONTEXT"
+kubectl wait --for=condition=Ready pod -l app=hello-stavanger -nexample --timeout=120s --context "$CONTEXT"
+echo "Pods ready, accepting traffic in $CONTEXT"
