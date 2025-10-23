@@ -19,4 +19,4 @@ This repository contains a demo setup for Istio multicluster (multi-primary with
 
 ## References
 ["Vi bygde et hybridmesh. Det var vakkert. Det var unødvendig."](https://www.hellostavanger.no/talks/918061)
-by [Bård Ove Hoel](https://github.com/BardOve) and [Even Holthe](https://github.com/evenh) (Hello Stavanger 2025)
+by [Bård Ove Hoel](https://github.com/BardOve) and [Even Holthe](https://github.com/evenh) (Hello Stavanger 2025). Slides can be found [here](./files/2025-10-23-hybridmesh.pdf).
