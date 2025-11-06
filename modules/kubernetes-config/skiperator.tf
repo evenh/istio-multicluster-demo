@@ -11,17 +11,51 @@ resource "kubernetes_namespace_v1" "skiperator-system" {
 resource "kubernetes_service_account_v1" "skiperator" {
   metadata {
     name      = "skiperator"
-    namespace = local.skiperator_ns
+    namespace = kubernetes_namespace_v1.skiperator-system.metadata[0].name
   }
   automount_service_account_token = false
-  depends_on                      = [kubernetes_namespace_v1.skiperator-system]
+}
+
+resource "kubernetes_config_map_v1" "skiperator-config" {
+  metadata {
+    name      = "skiperator-config"
+    namespace = kubernetes_namespace_v1.skiperator-system.metadata[0].name
+  }
+
+  data = {
+    "config.json" = jsonencode({
+      "topologyKeys" : [
+        "kubernetes.io/hostname",
+      ],
+      "leaderElection" : true,
+      "leaderElectionNamespace" : "skiperator-system",
+      "concurrentReconciles" : 1,
+      "isDeployment" : true,
+      "logLevel" : "debug",
+      "registrySecretRefs" : [],
+      "clusterCIDRExclusionEnabled" : true,
+      "clusterCIDRMap" : {
+        "clusters" : [
+          {
+            "name" : "test-cluster-1",
+            "controlPlaneCIDRs" : [
+              "10.40.10.0/25"
+            ],
+            "workerNodeCIDRs" : [
+              "10.40.10.0/24"
+            ]
+          }
+        ]
+      },
+      "gcpIdentityProvider" : "some-provider",
+      "gcpWorkloadIdentityPool" : "some-pool"
+    })
+  }
 }
 
 data "http" "skiperator_manifests_namespaced" {
   for_each = toset([
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/samples/gcp-identity-config.yaml",
     "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/samples/ns-exclusions-config.yaml",
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/samples/skiperator-config.yaml",
     "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/tests/cluster-config/rbac.yaml",
   ])
 
@@ -125,7 +159,7 @@ resource "kubernetes_deployment_v1" "skiperator" {
         automount_service_account_token = true
         container {
           name  = "skiperator"
-          image = "ghcr.io/kartverket/skiperator:v2.10.0"
+          image = "ghcr.io/kartverket/skiperator:sha-b83d015026badf665ad3b00616fa1dcc1317a0a7"
           args  = ["-l", "-d"]
 
           security_context {
