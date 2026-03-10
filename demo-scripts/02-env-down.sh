@@ -25,8 +25,8 @@ case "$picked" in
 esac
 
 echo "Taking control from skiperator for demo app in $CONTEXT"
-kubectl label deployment hello-stavanger skiperator.kartverket.no/ignore=true -nexample --context "$CONTEXT" && \
-kubectl scale deployment hello-stavanger --replicas=0 -nexample --context "$CONTEXT"
+kubectl label deployment talk-demo skiperator.kartverket.no/ignore=true -nexample --context "$CONTEXT" && \
+kubectl scale deployment talk-demo --replicas=0 -nexample --context "$CONTEXT"
 echo "Waiting for pods to be terminated in $CONTEXT..."
-kubectl wait --for=delete pod -l app=hello-stavanger -n example --timeout=120s --context "$CONTEXT"
+kubectl wait --for=delete pod -l app=talk-demo -n example --timeout=120s --context "$CONTEXT"
 echo "All pods terminated in $CONTEXT"

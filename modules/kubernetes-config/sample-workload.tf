@@ -12,7 +12,7 @@ resource "kubectl_manifest" "demo_app" {
 apiVersion: skiperator.kartverket.no/v1alpha1
 kind: Application
 metadata:
-  name: hello-stavanger
+  name: talk-demo
   namespace: ${kubernetes_namespace_v1.example.metadata[0].name}
 spec:
   image: ghcr.io/omaen/custom-http-response:main
