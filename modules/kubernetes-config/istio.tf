@@ -209,9 +209,6 @@ resource "helm_release" "istio_ingressgateway" {
         annotations = {
           "service.beta.kubernetes.io/do-loadbalancer-name"                  = local.external_hostname
           "service.beta.kubernetes.io/do-loadbalancer-protocol"              = "tcp"
-          "service.beta.kubernetes.io/do-loadbalancer-override-health-check" = "true"
-          "service.beta.kubernetes.io/do-loadbalancer-healthcheck-port"      = "15021"
-          "service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol"  = "tcp"
           "service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol" = "true"
         }
 
@@ -359,9 +356,6 @@ resource "helm_release" "istio_eastwestgateway" {
         annotations = {
           "service.beta.kubernetes.io/do-loadbalancer-name"                  = "ewgw.${local.external_hostname}"
           "service.beta.kubernetes.io/do-loadbalancer-protocol"              = "tcp"
-          "service.beta.kubernetes.io/do-loadbalancer-override-health-check" = "true"
-          "service.beta.kubernetes.io/do-loadbalancer-healthcheck-port"      = "15021"
-          "service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol"  = "tcp"
           "service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol" = "false"
         }
 
