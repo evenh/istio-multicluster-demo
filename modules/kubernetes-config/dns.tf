@@ -9,8 +9,7 @@ data "kubernetes_service_v1" "external_lb" {
 
 resource "digitalocean_record" "this" {
   for_each = {
-    "A"    = data.kubernetes_service_v1.external_lb.status.0.load_balancer.0.ingress[0].ip
-    "AAAA" = data.kubernetes_service_v1.external_lb.status.0.load_balancer.0.ingress[1].ip
+    "A" = data.kubernetes_service_v1.external_lb.status.0.load_balancer.0.ingress[0].ip
   }
   domain = var.dns_domain
   name   = var.name
