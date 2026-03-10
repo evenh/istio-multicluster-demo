@@ -18,10 +18,10 @@ spec:
   image: ghcr.io/omaen/custom-http-response:main
   port: 5000
   ingresses:
-    - hello-stavanger.${var.name}.${var.dns_domain}
+    - hello-kode24.${var.name}.${var.dns_domain}
   env:
     - name: TEXT_OUTPUT
-      value: "Hello from ${var.name} (${var.region})!"
+      value: "Hei kode24-dagen 5.0 👋 Hilsen ${var.region}"
 YAML
   depends_on = [
     kubernetes_deployment_v1.skiperator
