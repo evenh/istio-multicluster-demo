@@ -27,6 +27,6 @@ esac
 echo "Taking control from skiperator for demo app in $CONTEXT"
 kubectl label deployment talk-demo skiperator.kartverket.no/ignore=true -nexample --context "$CONTEXT" && \
 kubectl scale deployment talk-demo --replicas=0 -nexample --context "$CONTEXT"
-echo "Waiting for pods to be terminated in $CONTEXT..."
-kubectl wait --for=delete pod -l app=talk-demo -n example --timeout=120s --context "$CONTEXT"
-echo "All pods terminated in $CONTEXT"
+echo "Waiting for deployment rollout to finish in $CONTEXT..."
+wait_for_deployment_rollout "$CONTEXT" example talk-demo
+echo "Deployment scaled down in $CONTEXT"
