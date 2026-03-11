@@ -159,7 +159,7 @@ resource "kubernetes_deployment_v1" "skiperator" {
         automount_service_account_token = true
         container {
           name  = "skiperator"
-          image = "ghcr.io/kartverket/skiperator:sha-b83d015026badf665ad3b00616fa1dcc1317a0a7"
+          image = "ghcr.io/kartverket/skiperator:v2.13.0"
           args  = ["-l", "-d"]
 
           security_context {
