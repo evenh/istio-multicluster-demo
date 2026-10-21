@@ -8,7 +8,7 @@ variable "region" {
 
 variable "k8s_version" {
   type    = string
-  default = "1.35.1-do.0"
+  default = "1.35.9-do.1"
 }
 
 variable "vm_sku" {
