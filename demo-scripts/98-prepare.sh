@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-source ../files/scripts/common.sh
+# shellcheck source=../files/scripts/common.sh
+source "$(dirname -- "${BASH_SOURCE[0]}")/../files/scripts/common.sh"
 ensure_contexts
 
 kubectl label deployment talk-demo skiperator.kartverket.no/ignore=true -nexample --context "$CLUSTER_EAST" && \
