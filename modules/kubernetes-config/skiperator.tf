@@ -1,6 +1,8 @@
 locals {
   skiperator_ns             = "skiperator-system"
   webhook_serving_cert_name = "skiperator-webhook-server-cert"
+  skiperator_version        = "v2.19.0"
+  liberator_revision        = "d13e1c9834e40ca77d71d5f5ba75dd0be099d455"
 }
 
 resource "kubernetes_namespace_v1" "skiperator-system" {
@@ -131,9 +133,9 @@ resource "kubernetes_config_map_v1" "skiperator-config" {
 
 data "http" "skiperator_manifests_namespaced" {
   for_each = toset([
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/samples/ns-exclusions-config.yaml",
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/tests/cluster-config/rbac.yaml",
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/config/webhook/service.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/samples/ns-exclusions-config.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/tests/cluster-config/rbac.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/config/webhook/service.yaml",
   ])
 
   url = each.key
@@ -141,16 +143,16 @@ data "http" "skiperator_manifests_namespaced" {
 
 data "http" "skiperator_manifests" {
   for_each = toset([
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/config/crd/skiperator.kartverket.no_applications.yaml",
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/config/crd/skiperator.kartverket.no_routings.yaml",
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/config/crd/skiperator.kartverket.no_skipjobs.yaml",
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/config/rbac/role.yaml",
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/config/static/priorities.yaml",
-    "https://raw.githubusercontent.com/kartverket/skiperator/refs/heads/main/config/webhook/manifest.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/config/crd/skiperator.kartverket.no_applications.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/config/crd/skiperator.kartverket.no_routings.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/config/crd/skiperator.kartverket.no_skipjobs.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/config/rbac/role.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/config/static/priorities.yaml",
+    "https://raw.githubusercontent.com/kartverket/skiperator/${local.skiperator_version}/config/webhook/manifest.yaml",
     # Dependencies
     "https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.85.0/stripped-down-crds.yaml",
-    "https://raw.githubusercontent.com/nais/liberator/main/config/crd/bases/nais.io_idportenclients.yaml",
-    "https://raw.githubusercontent.com/nais/liberator/main/config/crd/bases/nais.io_maskinportenclients.yaml",
+    "https://raw.githubusercontent.com/nais/liberator/${local.liberator_revision}/config/crd/bases/nais.io_idportenclients.yaml",
+    "https://raw.githubusercontent.com/nais/liberator/${local.liberator_revision}/config/crd/bases/nais.io_maskinportenclients.yaml",
     "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml",
   ])
 
@@ -232,6 +234,9 @@ resource "kubernetes_deployment_v1" "skiperator" {
 
     template {
       metadata {
+        annotations = {
+          "checksum/config" = sha256(jsonencode(kubernetes_config_map_v1.skiperator-config.data))
+        }
         labels = {
           app = "skiperator"
         }
@@ -256,7 +261,7 @@ resource "kubernetes_deployment_v1" "skiperator" {
 
         container {
           name  = "skiperator"
-          image = "ghcr.io/kartverket/skiperator:v2.19.0"
+          image = "ghcr.io/kartverket/skiperator:${local.skiperator_version}"
           args = [
             "--webhook-cert-dir=/etc/webhook-certs",
             "--webhook-host=0.0.0.0",
