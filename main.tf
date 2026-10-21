@@ -15,7 +15,7 @@ module "east_config" {
 module "west" {
   source = "./modules/kubernetes"
   name   = "west"
-  region = "sfo3"
+  region = "sfo2"
   vpc_id = 160
 }
 
@@ -23,7 +23,7 @@ module "west_config" {
   source     = "./modules/kubernetes-config"
   kubeconfig = module.west.kubeconfig
   name       = "west"
-  region     = "sfo3"
+  region     = "sfo2"
 }
 
 module "connect-multicluster" {
