@@ -24,6 +24,6 @@ variable "dns_domain" {
 
 variable "istio_version" {
   type    = string
-  default = "1.29.0"
+  default = "1.31.2"
 }
 
