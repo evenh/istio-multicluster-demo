@@ -59,3 +59,41 @@ resource "kubernetes_network_policy_v1" "allow-eastwest-to-demo" {
     }
   }
 }
+
+resource "kubernetes_network_policy_v1" "allow-ingress-to-acme-solver" {
+  metadata {
+    name      = "allow-ingress-to-acme-solver"
+    namespace = kubernetes_namespace_v1.example.metadata[0].name
+  }
+
+  spec {
+    policy_types = ["Ingress"]
+
+    pod_selector {
+      match_labels = {
+        "acme.cert-manager.io/http01-solver" = "true"
+      }
+    }
+
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            "kubernetes.io/metadata.name" = local.istio_gateways_namespace
+          }
+        }
+
+        pod_selector {
+          match_labels = {
+            app = local.external_ingress_name
+          }
+        }
+      }
+
+      ports {
+        protocol = "TCP"
+        port     = "8089"
+      }
+    }
+  }
+}
