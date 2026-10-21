@@ -17,11 +17,12 @@ metadata:
 spec:
   image: ghcr.io/omaen/custom-http-response:main
   port: 5000
+  routingProvider: Standard
   ingresses:
-    - hello-kode24.${var.name}.${var.dns_domain}
+    - bergen.${var.name}.${var.dns_domain}
   env:
     - name: TEXT_OUTPUT
-      value: "Hei kode24-dagen 5.0 👋 Hilsen ${var.region}"
+      value: "Hei Cloud Native Days Norway 👋 Hilsen ${var.region}"
 YAML
   depends_on = [
     kubernetes_deployment_v1.skiperator

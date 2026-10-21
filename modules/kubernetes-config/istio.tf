@@ -1,8 +1,8 @@
 locals {
-  istio_repo               = "https://istio-release.storage.googleapis.com/charts"
+  istio_repo               = "https://blob.istio.io/istio-release/charts"
   istio_namespace          = "istio-system"
   istio_gateways_namespace = "istio-gateways"
-  hub                      = "gcr.io/istio-release"
+  hub                      = "docker.io/istio"
 
   external_hostname     = "${var.name}.${var.dns_domain}"
   external_ingress_name = "istio-ingress-external"
@@ -420,4 +420,40 @@ spec:
         mode: AUTO_PASSTHROUGH
 YAML
   depends_on = [helm_release.istio_eastwestgateway]
+}
+
+resource "kubectl_manifest" "istio_external_gateway" {
+  yaml_body = <<YAML
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: istio-external
+  namespace: ${kubernetes_namespace.istio_gateways.metadata[0].name}
+spec:
+  gatewayClassName: istio
+  allowedListeners:
+    namespaces:
+      from: All
+  addresses:
+    - type: Hostname
+      value: ${local.external_ingress_name}.${local.istio_gateways_namespace}.svc.cluster.local
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
+YAML
+
+  depends_on = [
+    helm_release.istio_ingressgateway,
+    kubectl_manifest.skiperator_docs,
+  ]
 }
