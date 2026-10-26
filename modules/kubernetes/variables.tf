@@ -13,7 +13,7 @@ variable "k8s_version" {
 
 variable "vm_sku" {
   type    = string
-  default = "s-2vcpu-2gb"
+  default = "s-2vcpu-2gb" // s-4vcpu-8gb
 }
 
 variable "min_nodes" {
